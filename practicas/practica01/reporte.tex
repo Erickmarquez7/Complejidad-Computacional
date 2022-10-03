@@ -1,0 +1,612 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{fullpage}
+\usepackage[top=2cm, bottom=4.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{lastpage}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\usepackage[inline]{enumitem}
+
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.05in}
+
+\newcommand\course{Complejidad Computacional}
+\newcommand\hwnumber{1}                 
+\newcommand\NetIDc{Erick Bernal Márquez 317042522} % <-- person #1
+\newcommand\NetIDa{José Alejandro Pérez Márquez 310109800}   % <-- person #2
+\newcommand\NetIDb{Tania Michelle Rubí Rojas 315121719}  % <-- person #3
+
+\newcommand{\lineaxd}{{\color{brown}\rule{\linewidth}{0.5mm}}}
+
+
+\pagestyle{fancyplain}
+\headheight 35pt
+\lhead{\NetIDa}
+\lhead{\NetIDa\\\NetIDb\\\NetIDc}                % <-- Comment this line out for problem sets (make sure you are person #1)
+\chead{\textbf{\Large Práctica \hwnumber}}
+\rhead{\course \\ Semestre 2023-1}
+\lfoot{}
+\cfoot{}
+\rfoot{\small\thepage}
+\headsep 1.5em
+
+\begin{document}
+
+\section*{Ejercicio 1}
+
+\textbf{PARTICION EN CLANES}\\
+
+EJEMPLAR: Una gráfica $G = (V, E)$ y un entero positivo $K \leq |V |$
+
+PREGUNTA: ¿Existe una partición de G en $k \leq K$ conjuntos disjuntos $V_1, V_2, ... , V_k$ tal que, $\forall i\quad 1 \leq i \leq k$, la subgráfica inducida por $V_i$ es un clan?\\
+
+\textbf{- Transforma el problema anterior a su versión de optimización:}\\
+
+Para transformalo a un problema de optimización debemos añadir un parametro que servirá como cota superior o inferior, digamos $m$, el cual depende si queremos maximizar o minimizar la solución buscada. Así, el problema quedaría como sigue: 
+
+
+%OJO, No es necesaria la m , el problema ya te da un parámetro K que está acotado por la cardinalidad del conjunto de vértices, en todo caso, si quieres tener ambas opciones (maximizar y minimizar) la cota es K%.\\
+
+EJEMPLAR: Sea una gráfica $G = (V, E)$, un entero positivo $K \leq |V|$ y una cota $m$ (a saber) 
+
+PREGUNTA: Encuentre una partición de G en $k \leq K$ conjuntos disjuntos $V_1, V_2, ... , V_k$ tal que, $\forall i\quad 1 \leq i \leq k$, la subgráfica inducida por $V_i$ sea un clan, además tenemos que:\\
+
+$m \leq i$ si queremos una cantidad de conjuntos que maxime el resultado
+
+$i \leq m$ si queremos una cantidad de conjuntos que minimce el resultado.
+
+\lineaxd
+
+\section*{Ejercicio 2}
+
+Describir e implementar un esquema de codificación razonable para ejemplares del problema PARTICION EN CLANES (en su versión de decisión).\\
+
+\textbf{Descripción:}
+
+El problema de Particion en clanes en su versión de decisión consiste en determinar si existe una partición de G en $k \leq K$ conjuntos disjuntos $V_1, V_2, ... , V_k$ tal que, $\forall i\quad 1 \leq i \leq k$, la subgráfica inducida por $V_i$ es un clan.
+
+Para codificar el problema, se iniciará leyendo la gráfica (no dirigida) como una matriz de adyacencias. Recordemos que por ejemplo, la matriz de adyacencia siguiente:
+
+\begin{center}
+011\\
+101\\
+110\\
+\end{center}
+
+
+representa una gráfica de 3 vértices, digamos (A, B, C) en la que todos los vértices están conectados entre sí, ya que el par ordenado $(x,y) = 0$ significa que x no es adyacente a y, y el par ordenado $(x,y)= 1$ significa que x es adyacente a y. Además notemos que ningún vértice está conectado así mismo.
+
+Por ejemplo, en la matriz siguiente $(A,B)=1$ significa que el vértice A es adyacente al vértice B.\\
+
+\begin{center}
+\_ A B C \\
+A  0 1 1 \\
+B  1 0 1 \\
+C  1 1 0 \\
+    
+\end{center}
+
+\begin{center}
+    \includegraphics[width=4.5cm]{graftrian.jpeg}
+\end{center}
+Salta a la vista el hecho de que si tenemos una grafica con $n$ nodos, todos estos nodos pueden estar conectados entre sí (salvo así mismo), por lo cual para contemplar todos estos casos la matriz tiene que ser de $n \times n$.
+
+%Observemos que para ver si un subconjunto de vértices es un clan bastaría entonces con verificar que haya un 1 entre cada par de vértices, pues recordemos que un clan es un subgrafo en el que cada vértice está conectado a todos los demás vértices del subgrafo. \\
+
+%Así, para saber si existe una partición de clanes que sea mínima, primero hay que verificar si la gráfica es completa, pues en ese caso la partición más pequeña es el conjunto de todos los vértices. En nuestro ejemplo (un triángulo) la partición más pequeña efectivamente es $V = \{ A, B, C\} $ pues cada vértice está conectado a todos los demás vértices.\\
+
+%%%%%%%%%%%%Comenté esto porque tal explicación sería parte del algoritmo, ahorita solo estamos describiendo como lo vamos a codificar
+%%%%%%%%%%%%%%
+
+Entonces nuestro alfabeto de entrada sería el siguiente: $\{1,0,$ \textbackslash n$\}$, donde \textbackslash n significa un salto de linea.\\
+Otro ejemplo es el siguiente
+
+Una gráfica que forme un cuadrado (con vértices A, B, C, D) su matriz de adyacencia es
+
+%Si la gráfica no es completa lo que se tiene que hacer entonces es verificar caso por caso si con cada dos, tres, cuatro y hasta n subconjuntos posibles forman una partición de clanes Por ejemplo, en una gráfica que forme un cuadrado (con vértices A, B, C, D) su matriz de adyacencia sería la siguiente: 
+
+\begin{center}
+\_ A B C D\\
+A  0 1 0 1 \\
+B  1 0 1 0\\
+C  0 1 0 1\\
+D  1 0 1 0 \\
+\end{center}
+
+\begin{center}
+    \includegraphics[width=4cm]{grafcua.jpeg}
+\end{center}
+
+%En este caso, dado que no es una gráfica completa habría que verificar caso por caso. Los casos posibles con dos subconjuntos son los siguientes : \\
+
+%$V_1 = \{ A \}, \quad V_2 = \{B, C, D \} $\\
+%$V_1 = \{ B \}, \quad V_2 = \{A, C, D  \} $\\
+%$V_1 = \{ C \}, \quad V_2 = \{A, B, D  \} $\\
+%$V_1 = \{ D \}, \quad V_2 = \{A, B, C  \} $\\
+%$V_1 = \{ A, B  \}, \quad V_2 = \{C, D \} $\\
+%$V_1 = \{ A, C  \}, \quad V_2 = \{B, D \} $\\
+%$V_1 = \{ A, D \}, \quad V_2 = \{B, C \} $\\
+%$V_1 = \{ B, C  \}, \quad V_2 = \{A, D \} $\\
+%$V_1 = \{ B, D  \}, \quad V_2 = \{A, C \} $\\
+
+
+%Los primeros cuatro se descartan pues los $V_1$ son unitarios y no forman un clan, por lo que hay que verificar los últimos cuatro. 
+
+%Observemos que \\
+
+%$V_1 = \{ A, B  \}, \quad V_2 = \{C, D \} $\\
+%$V_1 = \{ A, D \}, \quad V_2 = \{B, C \} $\\
+
+%forman ambas una partición con $k=2$, pero en caso de que niguno formara una partición habría que ir a verificar caso por caso con con $k =3$ y así sucesivamente. \\
+
+%\textbf{(ejemplo del cuadrado)} \\
+
+\newpage
+De esta forma podemos modelar nuestro programa de la siguiente manera
+
+ENTRADA: El número de particiones codificado en binario, después de dos saltos de linea la Matriz de adyacencias.
+
+\begin{center}
+ 0 0 1 0
+ 
+ 
+ 0 1 0 1 \\
+ 1 0 1 0\\
+ 0 1 0 1\\
+ 1 0 1 0 \\
+\end{center}
+
+En este caso particular la longitud es de 16 por la matriz más 4 del numero en binario y por último 5 saltos de linea, siendo un total de 25 caracteres.\\
+
+\textbf{NOTA}: Los espacios en blanco \textbf{no} los contamos, \textbf{no} forman parte de nuestro lenguaje, los ocupamos solo para que no se vea tan encimado tal como
+\begin{center}
+ 0010\\
+ 0101\\
+ 1010\\
+ 0101\\
+ 1010\\
+\end{center}
+Se ve más bonito.
+
+%Observemos que la matriz de adyacencia se puede codificar en un sólo renglón usando como separador al 1, por ejemplo, la matriz de nuestro cuadrado quedaría así: 
+
+%$$ \textbf{1} 0101 \textbf{1} 1010 \textbf{1} 0101 \textbf{1} 1010 \textbf{1}$$
+
+%Así, si la matriz tenía 16 entradas ahora nuestra entrada en un sólo renglón tendrá 16+5 = 21 entradas pues hemos agregado cinco 1's.\\
+
+Asi entonces podemos obtener cada uno de los siguientes puntos de la siguientes formas
+
+SALIDA:
+\begin{enumerate}
+    \item \textbf{Número de vértices}: Longitud de las columnas de la matriz, aunque también podría ser de las filas quitando el primero que lo ocupamos para codificar el número $k$. En este caso particular es igual a 4.%4 (longitud del primer renglón de la matriz ó la longitud del renglón entre cuatro menos el residuo de la división (5-1=4))
+    
+    \item \textbf{Número de aristas}: Número de 1's de la matriz entre 2. Para este caso 4. No contamos el primer renglón ya que no forma parte de la matriz de adyacencias.
+    
+    \item \textbf{Valor de K}: Directo del primer renglón.
+    
+    \item \textbf{Codificación del primer vértice de G}: A partir del 3 renglón podemos saber la cantidad de aristas que indicen en él y en qué vértice, además los podríamos etiquetar con letras para que sea más fácil de leer, siendo el primero A, el segundo B, y así sucesivamente.%Los vértices se pueden codificar con números : A = 1, B=2, C=3, D=4 (los cuales podemos convertir en binario)
+    
+    \item \textbf{Codificación de la primera arista}: El primer 1 leido a partir del tercer renglón cuyos vértices igual podemos deducir a partir de su posición. %La arista AB se codifica con el par ordenado $(A,B) = (1,2)$ que también se puede convertir en binario
+\end{enumerate}
+
+Veamos algunos ejemplos para entender mejor el funcionamiento.
+
+\textbf{A)} Ejemplar con al menos 6 vértices, $K = 2$ y con respuesta SÍ
+
+Consideremos la siguiente gráfica:
+
+\begin{center}
+    \includegraphics[width=5cm]{GRAF6_K2.png}
+\end{center}
+
+Entonces nuestra matriz de adyacencia es la siguiente
+
+\begin{center}
+\_ 1 2 3 4 5 6\\
+1  0 1 1 0 0 1\\
+2  1 0 1 0 0 0\\
+3  1 1 0 1 0 0\\
+4  0 0 1 0 1 1\\
+5  0 0 0 1 0 1\\
+6  1 0 0 1 1 0\\
+\end{center}
+
+Ahora nuestra entrada al programa será el número $k$ seguido de dos saltos de linea y de la matriz de adyacencia. Por lo cual la cadena de entrada es
+\begin{center}
+0 0 0 0 1 0
+
+
+
+0 1 1 0 0 1\\
+1 0 1 0 0 0\\
+1 1 0 1 0 0\\
+0 0 1 0 1 1\\
+0 0 0 1 0 1\\
+1 0 0 1 1 0\\
+\end{center}
+\newpage
+Así podemos obtener los siguientes puntos
+
+\begin{enumerate}
+    \item \textbf{Número de vértices}: Longitud de las columnas de la matriz, en este caso 6.
+    
+    \item \textbf{Número de aristas}: Número de 1's de la matriz entre 2. En este caso 8, no estamos contando el primer renglón puesto que no forma parte de la matriz de adyacencias.
+    
+    \item \textbf{Valor de K}: 000010 es el binario de 2.
+    
+    \item \textbf{Codificación del primer vértice de G}: A partir del 3$^{er}$ renglón. 011001
+    
+    \item \textbf{Codificación de la primera arista}: La codificación corresponde a la posición del primer 1 en la matriz. Pongamos una tupla $(x,y)$ donde $x$ es de izquierda a derecha y $y$ de arriba abajo empezando desde el 1 y sin contar el primer renglón. Entonces la primer arista es $(2,1)$, quiere decir que hay una arista que conecta los vértices 2 y 1.
+\end{enumerate}
+
+%Así, $k = 2$ y  $V_1 = \{ 1, 2, 3\}$, $V_2 = \{ 4, 5, 6\}$\\
+\textbf{B)} Ejemplar con al menos 6 vértices, $K = 3$ y con respuesta SÍ.
+
+Consideremos la siguiente gráfica:
+
+\begin{center}
+    \includegraphics[width=5cm]{GRAF6_K3.png}
+\end{center}
+
+Cuya matriz de adyacencia es la siguiente: 
+
+\begin{center}
+\_ 1 2 3 4 5 6 \\
+1  0 1 0 0 0 0 \\
+2  1 0 0 0 0 0 \\
+3  0 0 0 1 0 0 \\
+4  0 0 1 0 0 0 \\
+5  0 0 0 0 0 1 \\
+6  0 0 0 0 1 0 \\
+\end{center}
+\newpage
+Nuestra entrada al programa será el número $k$ seguido de dos saltos de linea y de la matriz de adyacencia. Por lo cual la cadena de entrada es
+\begin{center}
+0 0 0 0 1 1
+
+
+
+0 1 0 0 0 0 \\
+1 0 0 0 0 0 \\
+0 0 0 1 0 0 \\
+0 0 1 0 0 0 \\
+0 0 0 0 0 1 \\
+0 0 0 0 1 0 \\
+\end{center}
+
+Así podemos tener que
+
+\begin{enumerate}
+    \item \textbf{Número de vértices}: Longitud de las columnas de la matriz, en este caso 6.
+    
+    \item \textbf{Número de aristas}: Número de 1's de la matriz entre 2. En este caso 3, no estamos contando el primer renglón puesto que no forma parte de la matriz de adyacencias.
+    
+    \item \textbf{Valor de K}: 000011 es el binario de 3.
+    
+    \item \textbf{Codificación del primer vértice de G}: A partir del 3$^{er}$ renglón. 010000
+    
+    \item \textbf{Codificación de la primera arista}: La codificación corresponde a la posición del primer 1 en la matriz. Pongamos una tupla $(x,y)$ donde $x$ es de izquierda a derecha y $y$ de arriba abajo empezando desde el 1 y sin contar el primer renglón. Entonces la primer arista es $(2,1)$, quiere decir que hay una arista que conecta los vértices 2 y 1.
+\end{enumerate}
+
+%Así, $K= k =3$,  $V_1 = \{ 1, 2 \}$, $V_2 = \{ 3, 4\}$ y $V_3 =\{5,6\}$\\
+\newpage
+\textbf{C)} Ejemplar con al menos 6 vértices, $K = 2$ y con respuesta NO.
+
+Consideremos la siguiente gráfica: 
+\begin{center}
+    \includegraphics[width=4cm]{GRAF6_K2_no.png}
+\end{center}
+Cuya matriz de adyacencia es la siguiente: 
+
+\begin{center}
+\_ 1 2 3 4 5 6 \\
+1  0 1 0 0 0 1 \\
+2  1 0 1 0 0 0 \\
+3  0 1 0 1 0 0 \\
+4  0 0 1 0 1 0 \\
+5  0 0 0 1 0 1 \\
+6  1 0 0 0 1 0 \\
+\end{center}
+%Así, si $K=2$ no existe una partición de G en $k \leq 2$ conjuntos disjuntos tal que para $i \in \{ 1,2\} $ la subgráfica inducida por $V_i$ sea un clan. \\
+Nuestra entrada al programa será el número $k$ seguido de dos saltos de linea y de la matriz de adyacencia. Por lo cual la cadena de entrada es
+\begin{center}
+0 0 0 0 1 0
+
+
+0 1 0 0 0 1 \\
+1 0 1 0 0 0 \\
+0 1 0 1 0 0 \\
+0 0 1 0 1 0 \\
+0 0 0 1 0 1 \\
+1 0 0 0 1 0 \\
+\end{center}
+
+Así podemos tener que
+
+\begin{enumerate}
+    \item \textbf{Número de vértices}: Longitud de las columnas de la matriz, en este caso 6.
+    
+    \item \textbf{Número de aristas}: Número de 1's de la matriz entre 2. En este caso 6.
+    
+    \item \textbf{Valor de K}: 000010 es el binario de 2.
+    
+    \item \textbf{Codificación del primer vértice de G}: A partir del 3$^{er}$ renglón. 010001
+    
+    \item \textbf{Codificación de la primera arista}: La primer arista es $(2,1)$, quiere decir que hay una arista que conecta los vértices 2 y 1. De nuevo, no contamos el primer rengñon, ya que este es el valor de $k$
+\end{enumerate}
+
+\lineaxd
+
+\section*{Ejercicio 3}
+
+%Ahora viene la parte dificil de como redactar esto xd.
+Usaremos algunas propiedades de las gráficas que no servirán para facilitar la solución del problema los cuales podemos consultar en la parte de referencias.
+
+Para resolver el problema queremos un $k$ específico igual a 2, esto es dividir a los vértices de la gráfica en dos conjuntos ajenos diferente del vacío. $\phi$, es decir una gráfica bipartita. Para saber si una grafica es bipartita basta con saber si es 2-coloreable. (ver referencias)
+
+Aunque no cualquier gráfica $G$, tomaremos su complemento $G'$, pero ¿Por qué? Haremos un pequeño analisis antes de pasar al algoritmo  y así entenderlo mejor.
+
+Nos queda claro que si la grafica es bipartita entonces se puede dividir en dos subgráficas de tal manera que ningún vértice se conecta con otro del mismo conjunto, de hecho es la definción. Así de esta idea sacamos la $k=2$.
+
+
+%\begin{center}
+%    \includegraphics[width=4cm]{grfobi.jpg}
+%    \caption{Imagen extraida de google}
+%\end{center}
+
+\begin{figure}[htb]
+        \centering
+        \includegraphics[width=4cm]{grfobi.jpg}
+        \caption{Imagen extraída de google}
+    \end{figure}
+
+
+Ahora, ¿Cómo comprobamos que en efecto son clanes?
+
+Pues bien, la misma definción nos lo da. Si hacemos el complemento de la gráfica anterior nos daremos cuenta que los vértices encerrados en circulo azul están todos conectados entre sí, al igual que los vértices del círculo rojo. Que por definción esto significa que ambos son clanes.
+
+\begin{center}
+    \includegraphics[width=4cm]{grafobiC.jpg}
+\end{center}
+
+Así, para resolver el problema del clan con $k=2$ nos auxilaremos de este analisis; buscaremos que el complemento de la grafica sea bipartita y de esta manera podemos asegurar que la grafica original contiene 2 clanes.
+
+\textbf{Algoritmo}
+
+Para empezar debemos obtener el complemento de la grafica, esto es relativamente sencillo, basta con recorrer la matriz y cambiar los 0 por 1 y los 1 por 0, a excepción de la diagonal. Para ello ocuparemos dos \textit{for}. Esto tiene complejidad $O(n^2)$, donde $n$ es el numero de renglones del arreglo.
+
+Pseudocódigo
+\begin{verbatim}
+complemento(matriz):
+    for i in matriz:
+        for j in matriz[i]:
+            if matriz[i][j] = 1 then matriz[i][j] = 0
+            if matriz[i][j] = 0 then matriz[i][j] = 1 //cambiamos los numeros
+            if i == j then matriz[i][j] = 0 //dejamos la diagonal con 0
+    retun matriz
+\end{verbatim}
+
+Una vez obtenido el complemento de la grafica nos ocuparemos de saber si dicho complemento es bipartito, basta con saber si la gráfica es 2-coloreable.
+
+Después ocuparemos los dos siguientes algoritmos: \textit{colorea(vertice), explora(vertice)}.
+
+El primero se encarga de empezar la coloración con un vertice dado, y explorar la coloración de los demás. Generalmente mandaremos a llamar este algoritmo con el vértice incial Vertices[0], aunque bien podría ser cualquier otro. No tenemos ningún ciclo ni llamadas recursivas, solo asignaciones así el algoritmo tiene complejidad constante $O(1)$
+
+\begin{verbatim}
+colorea(vertice):
+    vertice.color = 1
+    if explora(vertice) == True:
+        return True
+    else:
+        return `La grafica no contiene dos clanes'
+\end{verbatim}
+A continuación explicaremos el segundo algoritmo. El algoritmo se manda a llamar con un vértice incial y de este sacamos los vecinos, \textit{vecinos}.\\
+Ahora para cada uno de sus vecinos \textit{vecx} comprobamos si tienen el mismo color, que el vecino que los mandó a llamar. En caso de que tengan el mismo color podemos asegurar que no es bipartita y por lo tanto no contiene dos clanes.
+\begin{center}
+    \includegraphics[width=5.5cm]{alg1.png}
+\end{center}
+En caso contrario verificamos si el vértice ha sido coloreado, sino lo fue entonces tenemos dos opciones:
+\begin{itemize}
+    \item El vértice tiene color 1 por lo cual a su vecino le asginamos el color 2
+    
+    \item El vértice tiene color 2 por lo cual a su vecino le asginamos el color 1
+\end{itemize}
+En cualquiera de los dos casos mandamos a llamar el método \textit{explora} con el vértice vecino para hacer recursión y así recorrer la gráfica. Aseguramos que el algoritmo termina pues notemos que nuestra clausula de escape es cuando todos los vértices hayan sido coloreados.
+
+Cuando esto suceda es porque obtuvimos una 2-coloración y por lo tanto la gráfica contiene dos clanes.
+
+\begin{verbatim}
+def explora(verticew):
+    vecinos = verticew.get_vecinos()
+    for vecx in vecinos:
+        vecx = lista_vert[vecx]
+        #si tiene la misma coloracion entonces falso
+        if vecx.color == verticew.color: 
+            return False
+        else:
+            if vecx.color == 0: #si el vértice aun no es coloreado
+                if verticew.color == 1: #si tiene color de 1
+                    vecx.color = 2 #lo coloreamos con el otro
+                    explora(vecx) #recursión sobre los vecinos del vecino
+                else:
+                    vecx.color = 1 #lo coloreamos con el color 1
+                    explora(vecx)
+    #en algún momento todos estan coloreados, por lo que podemos regresar True
+    return True 
+\end{verbatim}
+
+El algoritmo anterior recorre la gráfica y en el peor de los casos recorremos la grafica completa, todos los vértices y todas las aristas por lo cual tiene complejidad $O(|v|+|E|)$ donde $V$ es el número de vértices y $E$ el numero de aristas.
+
+Así la complejidad del algoritmo para resolver el problema del clan cuando $k=2$ es la suma de la complejidad de cada uno de los algoritmos anteriores.
+
+Aunque en nuestro código utilizamos más algoritmos para lectura de archivos, o conversiones no tomaremos en cuenta estos ya que no forman parte de la solución del problema, son unicamente auxiliares para facilitar la modelación del problema a la solución.
+\newpage
+\textbf{Funcionamiento y ejemplos}
+
+En la terminal debemos ejecutar la siguiente linea
+\begin{verbatim}
+    python main.py graficaN.txt
+\end{verbatim}
+
+Donde \textit{graficaN.txt} es el nombre del archivo a ejecutar y \textit{N} es la letra de la grafica correspondiente. Por ejemplo si ponemos
+
+\begin{verbatim}
+    python main.py graficaA.txt
+\end{verbatim}
+
+Nuestra salida es:
+\begin{verbatim}
+El numero de vertices es 6
+El numero de aristas es 6
+El valor de K es 2
+La representacion de nuestra matriz es:
+[[0 1 1 0 0 0]
+ [1 0 1 0 0 0]
+ [1 1 0 1 0 0]
+ [0 0 1 0 1 0]
+ [0 0 0 1 0 0]
+ [1 0 0 1 1 0]]
+Aplicacion del algoritmo
+Clan 1: [1, 2, 3]
+Clan 2: [4, 5, 6]
+\end{verbatim}
+
+Nuestro archivo \textit{graficaA.txt} corresponde a nuestro ejemplo \textbf{A)} visto anteriormente. En efecto la implementación coincide con lo que queríamos resolver.
+
+\newpage
+De la misma manera para el ejemplo \textbf{C)}.
+Entrada
+\begin{verbatim}
+    python main.py graficaC.txt
+\end{verbatim}
+    
+Salida:
+\begin{verbatim}
+El numero de vertices es 6
+El numero de aristas es 6
+El valor de K es 2
+La representacion de nuestra matriz es:
+[[0 1 0 0 0 1]
+ [1 0 1 0 0 0]
+ [0 1 0 1 0 0]
+ [0 0 1 0 1 0]
+ [0 0 0 1 0 1]
+ [1 0 0 0 1 0]]
+Aplicacion del algoritmo
+No contiene dos clanes
+\end{verbatim}
+
+Veamos ejemplos más interesantes como lo podría ser un grafica completa, en ella es evidente que cualquiera dos subconjuntos ajenos que agarremos forman un clan. Así que nos preguntamos ¿Cómo tomará a los vecinos de la grafica el programa?. Pues bien, pongamos la siguiente grafica completa con 6 vértices. 
+
+\begin{center}
+    \includegraphics[width=5.5cm]{graficacc.jpeg}
+\end{center}
+\newpage
+Su correspondiente codificación es.
+
+\begin{center}
+0 0 0 0 1 0 
+
+
+0 1 1 1 1 1  \\
+1 0 1 1 1 1  \\
+1 1 0 1 1 1 \\
+1 1 1 0 1 1 \\
+1 1 1 1 0 1 \\
+1 1 1 1 1 0 \\
+\end{center}
+Entrada al programa
+\begin{verbatim}
+    python main.py graficaCC.txt
+\end{verbatim}
+
+Salida
+\begin{verbatim}
+El numero de vertices es 6
+El numero de aristas es 15
+El valor de K es 2
+La representacion de nuestra matriz es:
+[[0 1 1 1 1 1]
+ [1 0 1 1 1 1]
+ [1 1 0 1 1 1]
+ [1 1 1 0 1 1]
+ [1 1 1 1 0 1]
+ [1 1 1 1 1 0]]
+Aplicacion del algoritmo
+Clan 1: [1]
+Clan 2: [2, 3, 4, 5, 6]
+\end{verbatim}
+
+Vemos que hecho la salida no es muy interesante, ya que el algoritmo parte del primer vértice y a este lo toma como el clan trivial.
+
+Otro ejemplo esperemos ahora sí más interesante. Tomemos la siguiente grafica $I$
+
+\begin{center}
+    \includegraphics[width=9cm]{graficaI.jpeg}
+\end{center}
+\newpage
+Pasemos directo a su codificación
+
+\begin{center}
+0 0 0 0 1 0 
+
+
+0 0 1 1 0 0  \\
+0 0 0 0 1 1  \\
+1 0 0 1 0 0 \\
+1 0 1 0 1 0 \\
+0 1 0 1 0 1 \\
+0 1 0 0 1 0 \\
+\end{center}
+
+Entrada del programa
+
+\begin{verbatim}
+    python main.py graficaI.txt
+\end{verbatim}
+
+Salida:
+\begin{verbatim}
+El numero de vertices es 6
+El numero de aristas es 7
+El valor de K es 2
+La representacion de nuestra matriz es:
+[[0 0 1 1 0 0]
+ [0 0 0 0 1 1]
+ [1 0 0 1 0 0]
+ [1 0 1 0 1 0]
+ [0 1 0 1 0 1]
+ [0 1 0 0 1 0]]
+Aplicacion del algoritmo
+Clan 1: [1, 3, 4]
+Clan 2: [2, 5, 6]
+\end{verbatim}
+
+
+%---------------------------
+
+
+
+
+\section*{Referencias}
+\begin{itemize}
+    \item Problema del clique: \url{https://es.wikipedia.org/wiki/Problema_del_clique}
+    
+    \item Problema del clique: \url{http://www.cs.ecu.edu/karl/6420/spr16/Notes/NPcomplete/clique.html}
+    
+    \item Teoría de gráficas:\\
+    \url{https://targatenet.com/2017/02/06/graph-in-computer-science-and-its-types/}
+    
+    \item Teoría de gráficas: \url{https://www.baeldung.com/cs/graph-theory-intro}
+    
+    \item Grafica bipartita \url{https://www.techiedelight.com/es/bipartite-graph/}
+    
+\end{itemize}
+\end{document}
