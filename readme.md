@@ -1,5 +1,9 @@
-## Prácticas de Complejidad Computacional
+## Prácticas y tareas de Complejidad Computacional
 
 ### Prácticas 
-1. uno
-2. dos
+1. Esquemas de codificación
+
+### Tareas
+1. Notación asintótica y ejemplos
+2. Maquinas de Turing
+3. Clases de complejidad
