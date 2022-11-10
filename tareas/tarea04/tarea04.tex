@@ -1,0 +1,478 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{fullpage}
+\usepackage[top=2cm, bottom=4.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{lastpage}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\usepackage[inline]{enumitem}
+
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.05in}
+
+\newcommand\course{Complejidad Computacional}
+\newcommand\hwnumber{4}                 
+\newcommand\NetIDc{Erick Bernal Márquez 317042522} % <-- person #1
+\newcommand\NetIDa{José Alejandro Pérez Márquez 310109800}   % <-- person #2
+\newcommand\NetIDb{Tania Michelle Rubí Rojas 315121719}  % <-- person #3
+
+\newcommand{\lineaxd}{{\color{brown}\rule{\linewidth}{0.5mm}}}
+
+
+\pagestyle{fancyplain}
+\headheight 35pt
+\lhead{\NetIDa}
+\lhead{\NetIDa\\\NetIDb\\\NetIDc}                % <-- Comment this line out for problem sets (make sure you are person #1)
+\chead{\textbf{\Large Tarea \hwnumber}}
+\rhead{\course \\ Semestre 2023-1}
+\lfoot{}
+\cfoot{}
+\rfoot{\small\thepage}
+\headsep 1.5em
+
+\begin{document}
+
+\section*{Ejercicio 1}
+\begin{itemize}
+    \item Demuestra que $\leq_p$ es una relación de orden en $NP$.
+    
+    Sean los lenguajes $A, B, C \in NP$. Para demostrar que $\leq_p$ es una relación de orden, 
+    debemos mostrar que $\leq_p$ es reflexiva, antisimétrica y transitiva. 
+    Dicho esto, procederemos a demostrar estas tres propiedades:
+    \begin{itemize}
+        \item[i.] \textbf{Reflexividad}. Queremos mostrar que $A \leq_p A$. 
+        Por definición, existe una función computable $f: \Sigma^* \rightarrow 
+        \Sigma^*$ tal que para cualquier $w$ se cumple que 
+        \begin{equation*}
+            x \in A \Leftrightarrow f(x) \in A
+        \end{equation*}
+
+        Tal función es la función \textit{Identidad}. Esto significa que el lenguaje $A$ siempre se puede reducir a sí mismo. 
+        Por lo tanto, $A \leq_p A$. 
+
+        \item[ii.] \textbf{Antisimetría}. Queremos mostrar que si $A \leq_p B 
+        \land B \leq_p A$, entonces $A = B$.
+
+        Supongamos que $A$ y $B$ son lenguajes tal que $A \leq_p B 
+        \land B \leq_p A$. Por definición, existen funciones computables 
+        $f: \Sigma^* \rightarrow \Sigma^*$ y $g: \Sigma^* \rightarrow \Sigma^*$, 
+        respectivamente, tal que para cualquier $x,y$ se cumple que 
+        \begin{align*}
+            x \in A &\Leftrightarrow f(x) \in B \\ 
+            y \in B &\Leftrightarrow g(y) \in A
+        \end{align*} 
+
+        Pero esto significa que sin importar que elementos $x \in A$ y $y \in B$ 
+        tomemos, las imagenes de $f(x)$ y $f(y)$ son iguales, es decir $x \in A = g(y) \in A, y \in B = f(x) \in B$ lo que implica $A = B$ en cuanto nivel de dificultad se refiere, es decir son equivalentes en dificultad.
+
+        \item[iii.] \textbf{Transitividad}. Queremos mostrar que si $A \leq_p 
+        B \land B \leq_p C$, entonces $A \leq_p C$. 
+
+        Entonces, supongamos que $A, B$ y $C$ son lenguajes tal que $A \leq_p B$ 
+        y $B \leq_p C$. Por definición, existen funciones computables 
+        $f: \Sigma^* \rightarrow \Sigma^*$ y $g: \Sigma^* \rightarrow \Sigma^*$, 
+        respectivamente, tal que para cualquier $w,x$ se cumple que 
+        \begin{align*}
+            w \in A &\Leftrightarrow f(w) \in B \\ 
+            x \in B &\Leftrightarrow g(x) \in C
+        \end{align*} 
+
+        De este modo, podemos definir una nueva función $h: \Sigma^* \rightarrow 
+        \Sigma^*$ tal que para cualquier $w$ se cumple que
+        \begin{align*}
+            w \in A \Leftrightarrow f(w) \in B \Leftrightarrow g(f(w)) \in C
+        \end{align*}
+
+        Dicha función $h$ es la composición $g(f(w))$. Sabemos que la composición $g \circ f$ se puede realizar pues el 
+        codominio de $f$ es igual al dominio de $g$. Así, esta nueva función 
+        es computable pues $f$ y $g$ también lo son. Por lo tanto, podemos 
+        concluir que $A \leq_p C$.
+    \end{itemize}
+
+    \item ¿Cómo podríamos definir formalmente que dos problemas en $NP$ son equivalentes en dificultad?
+    
+    Utilizando propiedad antisimetrica. Establece     
+    \begin{align*}
+        x \in A &\Leftrightarrow f(x) \in B \\ 
+        y \in B &\Leftrightarrow g(y) \in A
+    \end{align*} 
+    Es decir, que de un problema podemos \textit{``pasar''} a otro mediante algún algoritmo de transformación. Es aquí donde nos ayuda tal propiedad, pues si somos capaces de resolver \textit{A} entonces también podemos resolver \textit{B} y al revés también. Son igual de ``fáciles'' o igual de ``díficiles''.
+    
+    La propiedad concluye en \textit{A = B} lo cual tiene sentido si lo pensamos como niveles de dificultad y no como que son el mismo problema.
+    
+    \item ¿Utilizando $\leq_p$, es posible establecer relación de orden en $P$? ¿Se puede establecer algún otro tipo de orden, respecto a la dificultad de problemas, en $P$?
+    
+    Sí, acabamos de mostrar que existe un orden en \textit{NP} y como $P \subseteq NP$ significa que el orden tamibén existe en $P$. Tal orden es un orden parcial.\\
+    Podríamos definir un orden \textit{total} si logramos demostrar que para todo problema $A, B \in P$ entonces $A \leq_p B$ o $B \leq_p A$, esto es que todos los problemas se pueden comparar entre sí, que siempre existe alguna reducción entre cuales quiera dos problemas.
+    
+    
+    
+\end{itemize}
+\lineaxd
+\section*{Ejercicio 2}
+¿Cuáles de los siguientes problemas pertenecen a $NP$? ¿Cuáles a $coNP$? Justifica tu respuesta dando la demostración de pertenencia a las clases correspondientes:
+
+\begin{itemize}
+    \item \textit{DOM} = \{(G, K) $|$ G tiene un conjunto dominante de K nodos\}
+    
+    Un subconjunto de vértices C de G es un conjunto dominante de G, si todo otro vértice de G es adyacente a algún vértice de C.
+
+    Afirmamos que $DOM$ es NP
+    
+    Sea una grafica $G = (V,E)$ donde $|V|=n, |E|=m$ y $C \subseteq V$\\ 
+    Proponemos el ceritifcado $w$ como un conjunto $C\subseteq V$ de k vértices de G.
+    $$w = \{v_1, v_2, ..., v_k\}$$
+    \newpage
+    Para validar esta solución tenemos verificar que todos los vértices que no forman parte de $C$ (es decir los vértices de $V-C$) son adyacentes a alguno de los vértices de este conjunto. Esto se puede hacer con el siguiente algoritmo. %Esto se puede hacer en tiempo polinomial, es decir $O(|V|+ |E|)$ usando la siguiente estrategia:
+    \begin{enumerate}
+        \item Tomamos los vértices de la gráfica que no están en $C$, es decir el complemento del certificado $w$ como $w^c$.
+        
+        \item Para cada vértice de $w^c$. verificamos que sea adyacente a algún vértice de $C$, o sea a $w$.
+        
+        \item Si el vértice \textbf{no} es adyacente a algún vértice de $w$ entonces rechazamos, si no entonces continuamos verificando con el siguiente vértice.
+        
+        \item Una vez hayamos verificado que todos los vértices de $w^c$ son adyacentes a algún vértice en $w$ aceptamos.
+    \end{enumerate}
+
+    En el peor caso nos dan un certificado con un solo vértice, por lo que tenemos que recorrer $n-1$ vértices del certificado $w^c$ lo que hace la complejidad $O(n)$, Sin embargo estamos verificando con cada elemento en $w$ con longitud $k$, así la complejidad es $O(n \times k)$. Por lo tanto el problema es \textit{NP}.
+    %Observemos que $|V- C| = n-k$. Tomamos un vértice $v\in V$. Si $v \notin C$ lo que haremos es verificar el conjunto de aristas que inciden en $v$ y ver si $v$ es adyacente a algún vértice de $C$: Si $v$ no es adyacente a ningún vértice de $C$ entonces concluimos que C no es dominante. Observemos que verificar esto lo podemos hacer en (n-k) + k + m pasos y por tanto $DOM \in NP$ 
+
+    
+    \item \textit{ISO} = \{$(G_1, G_2)$ $|$ $G_1$ y $G_2$ son grafos isomorfos\} 
+    
+    Dos grafos son isomorfos si son iguales salvo por los nombres de sus arcos (pares de vértices).
+    
+    Recordemos que dos gráficas $G_1 = (V_1, E_1), G_2=(V_2, E_2)$ finitas son isomorfas si existe una biyección entre los vértices que preserva la estructura de las adyacencias, es decir, si existe $f: V_1 \rightarrow V_2$ tal que si $u,v \in V_1$ son adyacentes en $G_1$ si y sólo si $f(u), f(v)$ son adyacentes en $G_2$.
+    
+    El certificado serán dos matrices de adyacencias.
+    
+    $$w = \left \lbrace 
+    \begin{bmatrix}
+    e_{11}^1 & e_{12}^1 & ... & e_{1n}^1\\
+    e_{21}^1 & e_{22}^1 & ... & e_{2n}^1\\
+    e_{n1}^1 & e_{n2}^1 & ... & e_{nn}^1
+    \end{bmatrix},    
+    \begin{bmatrix}
+    e_{11}^2 & e_{12}^2 & ... & e_{1n}^2\\
+    e_{21}^2 & e_{22}^2 & ... & e_{2n}^2\\
+    e_{n1}^2 & e_{n2}^2 & ... & e_{nn}^2
+    \end{bmatrix}
+    \right \rbrace$$
+    
+    Lo que hará nuestro algoritmo de verificación es tomar dos vértices $v^1_{i}$ y $v^1_{j}$ de la matriz de $G_1$ que forman una entrada $e_{i,j}$ en la matriz, computar la función biyectiva para cada vértice y verificar que la entrada que forman dicho computo de vértices $e_{i',j'}^2$ en la matriz de la gráfica $G_2$ tenga el mismo valor que la entrada $e_{i,j}^1$
+    
+    \begin{enumerate}
+    \item Recorremos cada entrada de la matriz de $G_1$ y por cada entrada hacemos lo siguiente
+    
+    \item Obtenemos los vértices que forman dicha entrada $v_i^1$ y $v_j^1$ y guardamos el valor de la entrada en una variable llamada $valor1$
+    
+    \item Computamos la función para cada vértice. $f(v_i^1) = v_{i'}^2$ y $f(v_j^1) = v_{j'}^2$
+    
+    \item Buscamos el valor de la entrada $v_{i'}^2$ y $v_{j'}^2$, o bien $e_{i',j'}^2$ en la matriz de $G_2$
+    
+    \item Si el valor obtenido es el mismo que el da la variable $valor1$ continuamos con el otro vértice. Si no lo son rechazamos. Así hasta finalizar todas las entradas de la matriz de $G_1$
+    \end{enumerate}
+    
+    Como recorremos toda la matriz de la grafica $G_1$ entonces la complejidad es $O(|V|^2)$, podríamos pensar que también recorremos la matriz de la gráfica $G_2$, pero lo hacemos de distinto modo, ya que solo accedemos a sus entradas mediante la función biyectiva la cual se hace por cada iteración de la matriz de $G_1$, por lo cual sigue teniendo complejidad $O(|V|^2)$. De esta manera demostramos que $ISO \in NP$
+
+    \item \textit{HAM MOD} = \{$(G_1, G_2)$ $|$ $G_1$ tiene un ciclo Hamiltoniano y $G_2$ no tiene un ciclo Hamiltoniano\}
+    
+    Recordemos que un ciclo hamiltoniano es un camino cerrado que visita cada vértice de la gráfica exactamente una vez.
+
+    Primero mostraremos que el tener un ciclo hamiltoniano es $NP$, para esto solo tomaremos que $G_1$.
+    Nuestro certificado entonces es un permutación de vértices $w = v_1, v_2, ... v_k$.\\
+    El algoritmo de verificación toma cada par de vértices $v_i, v_{i+1}$ en $w$ y verifica que haya una una adyacencia entre ellos, además de que dichos vértices estén solamente una vez. Para ello
+    \begin{enumerate}
+        \item Recorremos el certificado $w$ y para cada vértice $v_i, v_{i+1}$ hacemos lo siguiente
+        
+        \item Verificamos que el vértice $v_i$ no esté marcado como visitado, si lo está rechazamos. (pues significa que el vértice se repitió en el camino) 
+        
+        \item Si el vértice no ha sido marcado entonces verificamos que haya una adyacencia entre el vértice $v_i$ y $v_{i+1}$. Si no la hay rechazamos. Si la hay continuamos con el resto de la cadena.
+        
+        \item Para el ultimo vértice del certificado verificado $v_k$ verificamos que haya adyacencia con el primer vértice del vertificado $v_1$. Si no la hay rechazamos
+        
+        \item Por ultimo, una vez que hayamos terminado de recorrer el certificado, comprobamos que todos los vertices hayan sido visitados. Si existe alguno que no haya sido marcado entonces rechazamos
+        
+        \item Si en ningún momento rechazamos antes, significa que en efecto existe un ciclo que pasa por todos los verices exactamente una vez.
+    \end{enumerate}
+    
+    Puesto que recorremos el certificado, el cual puede contener todos los vértices tenemos que la complejidad es $O(|V|)$, al final hacemos otro recorrrido pero de todos los vértices de la gráfica, es decir lo recorremos dos veces, sin embargo esto sigue teniendo complejidad lineal $O(|V|)$
+    
+    Segundo. Notemos que para la gráfica $G_2$ el problema está en \textit{coNP}, pues es justo la negación del problema de tener un ciclo hamiltoniano el cual acabamos de demostrar que está en $NP$.
+    
+    Por esto último nos preguntamos si entonces el problema vive en $NP$ y \textit{coNP} a la vez. Podríamos pensar que la respuesta es justo un \textit{Sí} ya que una parte vive en $NP$ y la otra en \textit{coNP}, pero también podríamos pensar que como $G_2$ es el complemento de algo que vive en $NP$ y $NP$ no es cerrado bajo el complemento, hace que solamente viva en \textit{coNP}. De esta manera creemos que solo vive en \textit{coNP}
+
+    \item \textit{FACT} = \{$n \in N, K \in Z^+$ $|$ $n$ tiene un factor primo menor o igual a $K$\}
+    
+    Sugerencia: Puedes asumir que \textit{PRIMOS} (el problema de decidir si un número es primo o no) está en P.
+    
+    El certificado consta de numeros tal que la multiplicación sea $n$. Y verificamos que sean número primos el cual, como está en $P$, se puede hacer tiempo polinomico. Realmente esto solo lo hacemos un vez. Por lo cual tiene el mismo tiempo que se usó para determinar si un numero era primo.
+    Así tenemos que $FACT \in NP$
+    
+\end{itemize}
+
+\lineaxd
+\section*{Ejercicio 3}
+Considera el siguiente problema:\\
+Una empresa utiliza listas de correos para enviar comunicados a sus trabajadores. Cada trabajador puede estar dado de alta en diferentes listas de correos, una por cada departamento. Supón que la lista más grande tiene registrados $m$ correos. Dada la naturaleza de la empresa, algunos trabajadores tienen roles asignados en más de un departamento, por tanto cada trabajador puede estar registrado en más de una lista de correos. El gerente de la empresa está organizando una reunión para conocer la opinión de los trabajadores y tomar decisiones importantes en la empresa. Sin embargo, en la sala de juntas solo hay espacio para $k$ personas. El gerente desea que cada departamento esté representado en la reunión por al menos un trabajador, por tanto necesita construir la lista de correos de los $k$ invitados, para enviar el correo con la invitación a la reunión. ¿Es posible construir dicha lista? En otras palabras: ¿Es posible que cada departamento tenga al menos un miembro asistente a la reunión?\\
+Demuestra que dicho problema es NP-completo.
+\newpage
+Es posible construir dicha lista sin embargo al demostrar que es \textit{NP}-completo quiere decir que el algoritmo es de tiempo polinomial \textbf{no} determinista. Primero mostraremos cómo codificamos el problema.
+
+\begin{itemize}
+    \item \textbf{Codificación}
+    
+    Tendremos una colección de listas donde cada lista representa un departamento, y los elementos de las listas representan a los correos en los departamentos. Por ejemplo 
+
+    \textit{departamentos} = \{informática, RRHH, ..., salud\}
+
+    Y por cada uno de estos tendremos una cantidad a lo más $m$ de correos 
+
+    \textit{departamentos} = $\{[c_1, c_2, ... c_m], [c_{1}',c_{2}'], ...,[c_{1}'', c_{2}'',c_{3}'']\}$
+
+    La lista de invitados de a lo más longitud k es una lista que contenga a los correos de los departamentos. Por ejemplo.
+
+    \textit{lista} = $[c_1, c_1', c_2'', ..., c_k]$ 
+
+    No necesariamente todos los correos pues es justo el problema que queremos resolver, en realidad es nuestro certificado $k$ para verificar que exista al menos una persona por departamento para asistir a tal reunión.
+
+    Formalmente
+
+    Ejemplar: Sea nuestro universo $U = \{c_1, c_2, ... c_n\}$, un entero $k$ y conjuntos\\ $d_1, d_2, ... d_n\subseteq U$ (los departamentos) conformados por los elementos $c_1, c_2, ... c_n$ de $U$\\
+    Pregunta: ¿Existe $w \subseteq U$ (la lista) con a lo más $k$ elementos $c_i$ tal que tenemos al menos un elemento de cada $d_i$ en $w$?\\
+    Es decir, para cada $d_i \cap w \neq \varnothing$
+
+    
+    \item \textbf{Pertenencia NP}
+    
+    Proponemos el certificado como una lista de $c_i \in U$ elegidas arbitrariamente de a lo más tamaño $k$. $w = \{c_1, c_2, ..., c_k\}$. 
+    Nuestro algoritmo
+    \begin{enumerate}
+        \item Verificamos que el certificado (la lista) sea de a lo más tamaño $k$. Si la lista tiene longitud mayor a $k$ rechazamos 
+        
+        \item Por cada subconjunto $d_i \subseteq U$ hacemos la interescción con nuestro certificado $w$. Si la intersección es vacía entonces rechazamos, si no es vacía seguimos verificando con el siguiente $d$.
+        
+        \item Al final si nunca rechazamos es porque todas las intersecciones fueron no vacias, por lo cual aceptamos.
+    \end{enumerate}
+    \newpage
+    Notemos que hacemos la operación intersección por cada subconjunto, sin embargo hay que tomar la complejidad de tal operación. En el peor caso la intersección compara todos los elementos de un conjunto $d_i$ con todos los elementos del otro conjunto $w$ para hacer la verififación, si suponemos que $d_i$ tiene a lo más $m$ elementos entonces la complejidad es $O(k \times m)$, Pero de nuevo esto lo hacemos por cada subconjunto $d_i$, como tenemos $n$ conjuntos entonces la complejidad total es $O(k \times m \times n)$
+    
+    \item \textbf{NP-Completo}
+    
+    Para ello tomaremos SAT, que sabemos es \textit{NP-Díficil} y lo reduciremos a este problema que adoptaremos como \textit{depa} (a falta de un mejor nombre e imaginación). Esto es SAT $\leq_p$ \textit{depa} 
+    
+    Nuestra transformación $f(x)$ toma las clausulas de SAT y las mapea a subconjuntos $d_j$ de la siguiente manera
+    \begin{enumerate}
+        \item Cada variable en una clausula en SAT es un $c_i$ de los distintos $d_j$. Por ejemplo
+        $$(p \vee q \vee r) \rightarrow \{p, q, r\} =d_1$$
+        $$(q \vee r) \rightarrow \{q, r\} =d_2$$
+        $$(p \vee s) \rightarrow \{p, s\} =d_3$$
+        $$...$$
+        $$ s \rightarrow \{s\} = d_j$$
+        
+        \item Así cada clausula de SAT es un $d_j$
+        $$(p \vee q \vee r) \wedge (q \vee r) \wedge (p \vee s) \wedge ... \wedge u \rightarrow \{p, q, r\}, \{q, r\}, \{p, s\}, ..., \{u\}$$
+    \end{enumerate}
+    
+    Supongamos que la formula $\phi$ es de longitud $b$, es decir, tiene $b$ símbolos en toda la formula sin importar repetidos, como recorremos toda $\phi$ para hacer el mapeo entonces tomará tiempo $O(b)$, una operación por cada símbolo.
+    
+    La asignación de valores de verdad de \textit{SAT} será nuestra lista $w$ para los $c_i$ para \textit{depa} siendo estos los que tenga el valor verdadero, por ejemplo si tenemos que 
+    $$p = True$$
+    $$q = True$$ 
+    $$r = False$$ 
+    $$s = False$$ 
+    $$\rightarrow w = \{p,q\}$$
+    
+    esto lo utilizaremos para demostrar que la transformación es correcta, es decir 
+    $$x \in SAT \Leftrightarrow f(x) \in depa $$
+    \newpage
+    $\Rightarrow$ Supongamos $x \in SAT$, esto quiere decir que existe alguna asignación de variables $p,q,r..., s$ tal que hacen verdadera la formula $\phi$ en SAT, hay un valor verdadero en cada cluasula. Como nuestras variables pasan a ser nuestra lista $w$ en el problema de \textit{depa} quiere decir que hay al menos un $c_i$ para cada $d_j$, que proveiene justo de las variables con valor verdadero.
+    
+    $\Leftarrow$ Por contradicción. Supongamos ahora que $x \notin SAT$, significa que existe al menos una cluasula en $\phi$ tal que cada variable es falsa, tomemos alguna $v_i$ de esta clausula. Esta variable no se verá reflejada en nuestra lista $w$ de $depa$ (de hecho niguna de las que están en dicha cluasula) por lo que faltarán $c_i$ en $w$ que estén en algún $d_j$. En particulae el $d_j$ que fue mapeado por tal cluasula. $\blacksquare$
+\end{itemize}
+
+
+
+\lineaxd
+\section*{Ejercicio 4}
+¿Cuál de los siguientes problemas es más difícil? Justifica y demuestra formalmente tu
+afirmación
+\begin{itemize}
+    \item \textbf{Problema:} 3SAT-IGUALDAD (3S-I) \\
+    \textbf{Ejemplar:} Una fórmula boolena $\phi$ en FNC (Forma Normal Conjuntiva) en la cual el número de cláusulas es igual al número de variables\\
+    \textbf{Pregunta:} ¿Existe una asignación que satisface $\phi$?
+    
+    \item \textbf{Problema:} 3SAT BALANCEADO (3S-B)\\
+    \textbf{Ejemplar:} Una fórmula boolena $\phi$ en FNC en la cual cada cláusula contiene 3 literales, y cada variable en $\phi$ aparece negada y sin negación el mismo número de veces\\
+    \textbf{Pregunta:} ¿Existe una asignación que satisface $\phi$?
+    
+    Si queremos decidir cúal problema es más difícil que el otro debemos hacer reducciones entre ambos problema para poder compararlos, es justo la idea del primer ejercicio. Así reduciremos \textit{3SAT-IGUALDAD} a \textit{3SAT-BALANCEADO} y posteriormente \textit{3SAT-BALANCEADO} a \textit{3SAT-IGUALDAD}.
+    \begin{itemize}[$\heartsuit$]
+        \item \textit{3SAT-IGUALDAD} $\leq_p$ \textit{3SAT-BALANCEADO}
+        
+        Nuestra funcion $f(x)$ hace lo siguiente
+        \begin{enumerate}
+            \item Copiamos toda la formula $\phi$ en 3S-I para crear la formula $\phi'$ en 3S-B.
+            
+            \item Por cada literal en la $\phi$ creamos otra clausula con la negación de la literal en $\phi'$. Además para completar que tengan 3 literales añadimos el valor \textit{True} dos veces a la clausula donde está la literal.
+        \end{enumerate}
+        \newpage
+        Por ejemplo si tenemos $\phi = (p \vee \bar{q} \vee r) \wedge (q \vee s \vee \bar{p}) \wedge ... \wedge (q \vee r \vee s)$ con tantas clausulas como variables.\\ Entonces $f(x) = \phi' = (p \vee \bar{q} \vee r) \wedge (q \vee s \vee \bar{p}) \wedge ... \wedge (q \vee r \vee s)
+        \\ \wedge (\bar{p} \vee True \vee True) \wedge (q \vee True \vee True) \wedge(\bar{r} \vee True \vee True) \wedge(\bar{q} \vee True \vee True)\wedge ...  \wedge (\bar{r} \vee True \vee True)\wedge (\bar{s} \vee True \vee True)$
+        
+        De esta manera aseguramos que por cada literal en la formula $\phi'$ tenemos su negación y por lo tanto igual cantidad de negación como sin negar.
+        
+        El algoritmo tiene complejidad lineal $O(n)$ con $n$ el tamaño de la fórmula $\phi$ ya que recorremos la cadena y por cada literal hacemos solo la operación de crear la negación y poner los valores \textit{True}.
+        
+        \textbf{Demostracion} $x \in$ \textit{3S-I} $\Leftrightarrow f(x) \in$ \textit{3S-B}
+        
+        Sale directo de la asignación de valores de cada variable. Al agregar \textit{True} a cada clausula nueva que construimos, como es un \textit{O}, el valor de las cluasulas nuevas es \textit{True} y por lo tanto no afectará al valor de las otras clausulas que ya teníamos. Por lo cual el valor de la fórmula $\phi$ será el mismo que el da la formula $\phi'$ sea este verdadero o falso.
+        
+        Así \textit{3SAT-IGUALDAD} $\leq_p$ \textit{3SAT-BALANCEADO}
+        
+        \item \textit{3SAT-BALANCEADO} $\leq_p$ \textit{3SAT-IGUALDAD}  
+        Nuestra función $f(x)$ hace lo siguiente
+        \begin{enumerate}
+            \item Contamos la cantidad de variables y clausulas de $\phi$ en \textit{3S-B}. Nos divimos en casos
+            \begin{enumerate}[i.]
+                \item Si hay menos variables que clausulas.
+                
+                Entonces añadimos cualesquiera nuevas variables hasta que el numero de estas sea igual al numero de clausulas, sin embargo estas nunca las vamos a utilizar en la nueva fórmula $\phi'$ en \textit{3S-I}.
+                
+                \item Si hay menos clausulas que variables.
+                
+                Entonces añadimos nuevas clausulas de la forma \textit{(True $\vee$ True $\vee$  True)} hasta igualar el numero de variables
+                
+                \item Si hay tantas clausulas como variables lo dejamos exactamente igual.
+            \end{enumerate}
+        \end{enumerate}
+    
+    Para contar el numero de variables y clausulas recorremos la fórmula $\phi$, esto es $O(n)$ con $n$ el tamaño de la fórmula. Para añadir nuevas variables o clausulas no hacemos más operaciones que el numero de clausulas o variables. Por lo cual siguen siendo $O(n)$.
+    \newpage
+    \textbf{Demostracion} $x \in$ \textit{3S-B} $\Leftrightarrow f(x) \in$ \textit{3S-I}.
+    Sale directo siguiendo la misma idea que la demostración anterior sin embargo tenemos 3 diferentes casos.
+    \begin{enumerate}[i.]
+        \item Si hay menos variables que clausulas.
+        
+        Como la fórmula no cambia entonces tendrá el mismo valor tanto en $\phi$ como en $\phi'$
+        
+        \item Si hay menos clausulas que variables.
+        
+        Añadimos nuevas clausulas, sin embargo al tener estas valores de verdad no afecta a la evaluación de $\phi'$ ya que será la misma que $\phi$, sea verdadera o falsa.
+        
+        \item Si hay tantas clausulas como variables.
+        
+        Mismo caso que \textit{i.}
+    \end{enumerate}
+    Así  \textit{3SAT-BALANCEADO} $\leq_p$ \textit{3SAT-IGUALDAD}    
+    \end{itemize}
+    Como pudimos hacer ambas reducciones tenemos que\\ \textit{3SAT-IGUALDAD = 3SAT-BALANCEADO} en cuestión de dificultad.
+    
+\end{itemize}
+\lineaxd
+\section*{Ejercicio 5}
+Sean $L_1, L_2 \in NP$ ¿Cuáles de las siguientes afirmaciones son ciertas o falsas? Justifica tu respuesta:
+
+\begin{itemize}
+    \item $L = L_1 \cup L_2, L \in NP$
+    
+    La afirmación es \textbf{verdadera}. Para justificar 
+    esto mostraremos que la clase NP es cerrada bajo la operación de unión. 
+    Para mostrar esto, hay que demostrar que existe una máquina de turing 
+    no-determinista que decide a $A \cup B$ en tiempo polinomial.
+
+    Entonces, supongamos que $A$ y $B$ son dos lenguajes tales que $A,B \in NP$. 
+    Por definición, esto significa que existen máquinas de Turing no-deterministas 
+    $M_1$ y $M_2$ que deciden a $A$ y $B$ en tiempo polinomial, respectivamente. 
+    Vamos a definir una máquina de turing no-determinista $M$ que decida a 
+    $A \cup B$ en tiempo polinomial:
+    \begin{verbatim}
+        M = Para la entrada w
+        1. Ejecutar M_1 sobre w. Si M_1 acepta, entonces M acepta. 
+        2. Ejecutar M_2 sobre w. Si M_2 acepta, entonces M acepta. 
+        3. En otro caso, rechaza. 
+    \end{verbatim}
+    Recordemos que la definición de la unión es la siguiente:
+    \begin{equation*}
+        x \in X \cup Y \Leftrightarrow x \in X \lor x \in Y
+    \end{equation*}
+
+    Entonces, basta con que $w$ sea aceptada en alguna de las máquinas $M_1$ 
+    o $M_2$ (puede ser que sea aceptada en ambas) para que la máquina $M$ 
+    acepte a $A \cup B$. La máquina $M$ es no-determinista pues en los pasos 
+    uno y dos, cuando las máquinas $M_1$ y $M_2$ se ejecutan, realizan pasos 
+    no-deterministas. Y como ambas máquinas $M_1$ y $M_2$ toman tiempo 
+    polinomial, entonces $M$ se ejecuta en tiempo polinomial. 
+
+    Así, hemos probado que $A \cup B \in NP$. 
+    
+    \item $L = L_1 \cap L_2, L \in NP$
+    
+    La afirmación es \textbf{verdadera}. Para justificar 
+    esto mostraremos que la clase NP es cerrada bajo la operación de 
+    intersección. Para ello, hay que demostrar que existe una máquina 
+    de turing no-determinista que decide a $A \cap B$ en tiempo polinomial.
+
+    Entonces, supongamos que $A$ y $B$ son dos lenguajes tales que $A,B \in NP$. 
+    Por definición, esto significa que existen máquinas de Turing no-deterministas 
+    $M_1$ y $M_2$ que deciden a $A$ y $B$ en tiempo polinomial, respectivamente. 
+    Vamos a definir una máquina de turing no-determinista $M$ que decida a 
+    $A \cap B$ en tiempo polinomial:
+    \begin{verbatim}
+        M = Para la entrada w
+        1. Ejecutar M_1 sobre w. Si M_1 rechaza, entonces M rechaza. 
+        2. Ejecutar M_2 sobre w. Si M_2 rechaza, entonces M rechaza. 
+        3. En otro caso, acepta.
+    \end{verbatim}
+
+    Recordemos que la definición de la intersección es la siguiente:
+    \begin{equation*}
+        x \in X \cap Y \Leftrightarrow x \in X \land x \in Y
+    \end{equation*}
+
+    Entonces, tenemos que $w$ debe ser aceptaba tanto por $M_1$ como por 
+    $M_2$ para que la máquina $M$ acepte a $A \cap B$. La máquina $M$ es 
+    no-determinista pues en los pasos uno y dos, cuando las máquinas $M_1$ 
+    y $M_2$ se ejecutan, realizan pasos no-deterministas. Y como ambas 
+    máquinas $M_1$ y $M_2$ toman tiempo polinomial, entonces $M$ se ejecuta 
+    en tiempo polinomial. 
+
+    Así, hemos probado que $A \cap B \in NP$. 
+    
+    \item Si $L_1$ es $coNP -$ \textit{Difícil} entonces $N=NP$
+
+\end{itemize}
+\lineaxd
+\newpage
+\section*{Referencias}
+\begin{itemize}
+    \item Orden parcial
+    
+    \url{https://es.wikipedia.org/wiki/Conjunto_parcialmente_ordenado}
+    
+    \item Orden parcial
+    
+    \url{https://blog.nekomath.com/teoria-de-los-conjuntos-ordenes-parciales-y-ordenes-parciales-estrictos/}
+    
+    \item Orden total
+    
+    \url{https://blog.nekomath.com/algebra-superior-i-ordenes-parciales/}
+    
+    \item Problemas NP y reducciones
+    
+    Temas del presente curso
+    
+    \item Propiedades de NP y coNP
+    
+    Vistas en clase.
+    
+\end{itemize}
+
+\end{document}
