@@ -178,4 +178,3 @@ if valor:
 
 else:
     print('No contiene dos clanes')
-

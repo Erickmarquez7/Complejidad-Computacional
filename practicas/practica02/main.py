@@ -113,4 +113,3 @@ if bandera == True:
 else:
     print('El ejemplar con el certificado dado NO satisface la condición')
     print('de pertenencia al lenguaje')
-
